@@ -1,4 +1,4 @@
-# Proyecto de Lenguajes y Paradigmas: Lenguaje de Señas "Chocolate" 🍫
+# Te-La-Choco🍫
 
 Este proyecto, desarrollado para la asignatura de **Lenguajes y Paradigmas**, introduce un lenguaje de señas basado en el popular juego de mesa "Chocolate". El objetivo principal es explorar los principios de la **traducción de lenguajes** y la **representación simbólica** a través de un sistema simple y funcional.
 
