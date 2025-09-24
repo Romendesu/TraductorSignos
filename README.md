@@ -6,22 +6,27 @@ Este proyecto, desarrollado para la asignatura de **Lenguajes y Paradigmas**, in
 
 ## El Juego "Chocolate"
 
-El juego "Chocolate" es un desafío lógico donde los jugadores deben "romper" una barra de chocolate virtual, moviendo piezas hasta que solo quede una. En este proyecto, cada movimiento y estado del juego se traduce a una señal específica, creando un lenguaje de señas que describe el progreso del juego.
+El juego "Chocolate" es un juego de manos donde existen 3 combinaciones principales que se asocian a sonidos específicos:
+
+1.  **Choco**: 🤚
+2.  **La**: ✋
+3.  **Te**: 👊
+
+Estas combinaciones de manos se utilizan para representar y "traducir" cadenas de texto, creando un lenguaje de señas que describe el texto de manera simbólica.
 
 ---
 
 ## Estructura del Proyecto
 
-El repositorio contiene un único archivo de Python, `chocolate_signs.py`, que alberga toda la lógica del proyecto. No se requieren dependencias externas, lo que facilita su ejecución y estudio.
+El repositorio contiene un único archivo de Python, `traductor.py`, que alberga toda la lógica del proyecto. No se requieren dependencias externas, lo que facilita su ejecución y estudio.
 
-* `chocolate_signs.py`: Este script implementa la lógica de traducción de los movimientos del juego a su representación en lenguaje de señas.
+* `traductor.py`: Este script traduce automáticamente una cadena de texto al lenguaje "Choco-La-Te".
 
 ---
 
 ## ¿Cómo Funciona?
 
-El programa toma una secuencia de movimientos del juego "Chocolate" y los convierte en una serie de "señas". Cada seña es una representación simbólica que corresponde a una acción específica del juego, como "romper", "mover", o "girar". Este proceso ilustra cómo un lenguaje de alto nivel (los movimientos del juego) puede ser traducido a uno de más bajo nivel (las señas), sirviendo como un claro ejemplo de los conceptos vistos en clase.
-
+El programa toma una cadena de texto y la convierte en una secuencia de "señas" (`🤚`, `✋`, `👊`) basadas en las reglas del juego "Chocolate". Este proceso ilustra cómo un lenguaje de alto nivel (el texto escrito) puede ser traducido al lenguaje de señas "Te-La-Choco".
 ---
 
 ## Uso
@@ -29,4 +34,4 @@ El programa toma una secuencia de movimientos del juego "Chocolate" y los convie
 Para ver el proyecto en acción, simplemente ejecuta el archivo Python desde la terminal:
 
 ```bash
-python chocolate_signs.py
+python3 traductor.py
