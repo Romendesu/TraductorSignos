@@ -1,1 +1,2 @@
-# TraductorSignos
+# Trabajo de Lenguajes y Paradigmas
+
