@@ -3,96 +3,124 @@ def codificador(mensaje) -> str:
     mensajeSpliteado = mensaje.split(" ")
     mensajeCodificado = ""
     diccionario = {
-    'A': '.',
-    'B': '..',
-    'C': '…',
-    'D': '._',
-    'E': '_',
-    'F': '_.',
-    'G': '_..',
-    'H': '_…',
-    'I': '.^',
-    'J': '^',
-    'K': '^.',
-    'L': '^..',
-    'M': '^…',
-    'N': '.v',
-    'O': 'v',
-    'P': 'v.',
-    'Q': 'v..',
-    'R': 'v…',
-    'S': '.^^',
-    'T': '^^',
-    'U': '^^.',
-    'V': '^^..',
-    'W': '^^…',
-    'X': '.^v',
-    'Y': '^v',
-    'Z': '^v.',
-    ',': ','
+        'A': '🤚',
+        'B': '🤚🤚',
+        'C': '🤚🤚🤚',
+        'D': '🤚✋',
+        'E': '✋',
+        'F': '✋🤚',
+        'G': '✋🤚🤚',
+        'H': '✋🤚🤚🤚',
+        'I': '🤚👊',
+        'J': '👊',
+        'K': '👊🤚',
+        'L': '👊🤚🤚',
+        'M': '👊🤚🤚🤚',
+        'N': '👊🤚✋',
+        'O': '👊✋🤚',
+        'P': '👊✋🤚🤚',
+        'Q': '👊✋🤚🤚🤚',
+        'R': '🤚👊👊',
+        'S': '👊👊',
+        'T': '👊👊🤚',
+        'U': '👊👊🤚🤚',
+        'V': '👊👊🤚🤚🤚',
+        'W': '👊👊🤚✋',
+        'X': '👊👊✋',
+        'Y': '👊👊✋🤚',
+        'Z': '👊👊✋🤚🤚',
+        ',': ',',
+        '.':'·',
+        '1': '(🤚)i',
+        '2': '(🤚🤚)i',
+        '3': '(🤚🤚🤚)i',
+        '4': '(🤚✋)i',
+        '5': '(✋)i',
+        '6': '(✋🤚)i',
+        '7': '(✋🤚🤚)i',
+        '8': '(✋🤚🤚🤚)i',
+        '9': '(🤚👊)i',
+        '0': '(👊)i'
     }
     for texto in mensajeSpliteado:
         cadenaCodificada = ""
-        # Analisis de las cadenas
         for letra in range(len(texto)):
             caracter = texto[letra].upper()
             cadenaCodificada += diccionario[caracter]
             if ((letra + 1) < len(texto)):
-                cadenaCodificada += "I"
+                cadenaCodificada += " "
         mensajeCodificado += cadenaCodificada 
-        # Si el caracter NO se encuentra en la ultima posicion, agregar espacio
         if texto != mensajeSpliteado[-1]:
-           mensajeCodificado += "II"
+           mensajeCodificado += "  "
 
     return mensajeCodificado
 
+
 def decodificador(mensaje) -> str:
-    mensajeSpliteado = mensaje.split("I")
-    diccionario = {
-    '.': 'A',
-    '..': 'B',
-    '…': 'C',
-    '._': 'D',
-    '_': 'E',
-    '_.': 'F',
-    '_..': 'G',
-    '_…': 'H',
-    '.^': 'I',
-    '^': 'J',
-    '^.': 'K',
-    '^..': 'L',
-    '^…': 'M',
-    '.v': 'N',
-    'v': 'O',
-    'v.': 'P',
-    'v..': 'Q',
-    'v…': 'R',
-    '.^^': 'S',
-    '^^': 'T',
-    '^^.': 'U',
-    '^^..': 'V',
-    '^^…': 'W',
-    '.^v': 'X',
-    '^v': 'Y',
-    '^v.': 'Z',
-    '': " ",
-    ',':','
+    diccionario_invertido = {
+        '🤚': 'A',
+        '🤚🤚': 'B',
+        '🤚🤚🤚': 'C',
+        '🤚✋': 'D',
+        '✋': 'E',
+        '✋🤚': 'F',
+        '✋🤚🤚': 'G',
+        '✋🤚🤚🤚': 'H',
+        '🤚👊': 'I',
+        '👊': 'J',
+        '👊🤚': 'K',
+        '👊🤚🤚': 'L',
+        '👊🤚🤚🤚': 'M',
+        '👊🤚✋': 'N',
+        '👊✋🤚': 'O',
+        '👊✋🤚🤚': 'P',
+        '👊✋🤚🤚🤚': 'Q',
+        '🤚👊👊': 'R',
+        '👊👊': 'S',
+        '👊👊🤚': 'T',
+        '👊👊🤚🤚': 'U',
+        '👊👊🤚🤚🤚': 'V',
+        '👊👊🤚✋': 'W',
+        '👊👊✋': 'X',
+        '👊👊✋🤚': 'Y',
+        '👊👊✋🤚🤚': 'Z',
+        ',': ',',
+        '·': '.',
+        '(🤚)i':'1',
+        '(🤚🤚)i':'2',
+        '(🤚🤚🤚)i':'3',
+        '(🤚✋)i':'4',
+        '(✋)i':'5',
+        '(✋🤚)i':'6',
+        '(✋🤚🤚)i':'7',
+        '(✋🤚🤚🤚)i':'8',
+        '(🤚👊)i':'9',
+        '(👊)i':'0'
     }
-    mensajeDecodificado = ""
-    for indiceSimbolo in range(len(mensajeSpliteado)):
-        letra = mensajeSpliteado[indiceSimbolo]
-        traducida = diccionario[letra]
-        mensajeDecodificado += traducida
-    return mensajeDecodificado.lower()
+    
+    palabras = mensaje.split("  ")  # separar palabras
+    mensajeDecodificado = []
+    
+    for palabra in palabras:
+        letras_codificadas = palabra.split(" ")  # separar letras
+        palabraDecodificada = ""
+        for simbolo in letras_codificadas:
+            if simbolo:  # ignorar vacíos
+                letra = diccionario_invertido.get(simbolo)
+                if letra:  # ignorar símbolos desconocidos
+                    palabraDecodificada += letra
+        mensajeDecodificado.append(palabraDecodificada)
+    
+    return " ".join(mensajeDecodificado).lower()
+
 
 def main():
-    # Flujo normal del programa
     opcion = True
     while opcion:
-        mensaje = input("Introduce un mensaje:\n")
+        mensaje = input("Introduce un mensaje (No incluir numeros, funcion no implementada):\n")
         try:
-            print("Mensaje codificado", codificador(mensaje))
-            print("Mensaje decodificado", decodificador(codificador(mensaje)))
+            print("Mensaje codificado:", codificador(mensaje))
+            print("Mensaje decodificado:", decodificador(codificador(mensaje)))
             continuar = input("Desea continuar: S/N: ")
             while True:
                 if continuar.lower() == "s": 
@@ -102,11 +130,13 @@ def main():
                     break
                 else:  
                     continuar = input("Opcion ingresada no valida, introduce una opcion valida: S/N: ")
-        except Exception:
-            print(f"No se ha podido codificar el mensaje:{mensaje}.")
+        except Exception as e:
+            print(f"No se ha podido codificar el mensaje: {mensaje}. Error: {e}")
 
     return None
 
+
 if __name__ == "__main__":
     main()
+
     
