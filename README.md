@@ -27,6 +27,7 @@ El repositorio contiene un único archivo de Python, `traductor.py`, que alberga
 ## ¿Cómo Funciona?
 
 El programa toma una cadena de texto y la convierte en una secuencia de "señas" (`🤚`, `✋`, `👊`) basadas en las reglas del juego "Chocolate". Este proceso ilustra cómo un lenguaje de alto nivel (el texto escrito) puede ser traducido al lenguaje de señas "Te-La-Choco".
+
 ---
 
 ## Uso
