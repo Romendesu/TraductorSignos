@@ -18,7 +18,9 @@ Estas combinaciones de manos se utilizan para representar y "traducir" cadenas d
 
 ## Estructura del Proyecto
 
-El repositorio contiene un único archivo de Python, `traductor.py`, que alberga toda la lógica del proyecto. No se requieren dependencias externas, lo que facilita su ejecución y estudio.
+El repositorio contiene 2 partes principales. Uno es un archivo de Python, `traductor.py`,que permite codificar mensajes, y otro es un compilador (BETA).
+
+Se ha pensado en que la versión final del compilador se ejecute en código C, mientras tanto, será un ejecutable en python. No se requieren dependencias externas, lo que facilita su ejecución y estudio.
 
 * `traductor.py`: Este script traduce automáticamente una cadena de texto al lenguaje "Choco-La-Te".
 
