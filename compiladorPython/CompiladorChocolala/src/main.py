@@ -1,7 +1,9 @@
 import sys
 from utils.auxiliarFunctions import *
+from assembler.assembly import VirtualMachine
 
 def main() -> None:
+    clear()
     # Inicio del flujo normal del programa
     print(f'{"="*50}\n\nBienvenido al Compilador de Te-La-Choco (BETA)\n\n{"="*50}')
 
@@ -15,10 +17,13 @@ def main() -> None:
         raise Exception("[ERROR] El archivo proporcionado no esta escrito en Te-La-Choco.")
     
     # Conversion del texto plano
-    instructions = tokenConversor(fileArgument)
-    
-    # Mostramos el array de tokens por pantalla
+    instructions = addInstructionsQueue(fileArgument)
+    # Mostramos la cola de instrucciones
     print(instructions)
+    # Inicializamos la virtual machine y ejecutamos el programa
+    vm = VirtualMachine(instructions)
+    vm.execute()
+    
     
 
 if __name__ == "__main__":

@@ -1,3 +1,4 @@
-Instruccion 1;
-Instruccion 2;
-Instruccion 3;
+PR R1 4;
+PR R2 5;
+FR R1;
+ADD R1 R2 R3;
