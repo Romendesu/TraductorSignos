@@ -83,6 +83,7 @@ class VirtualMachine:
         print(f"[EXIT] Program executed in {time.time() - timeI} seconds.")
 
 
+
     # Funcion para mostrar registros
     def showRegisters(self) -> None:
         print(f"\033[93m{f"{"="*21} MEMORY {"="*21}"}\033[00m")
