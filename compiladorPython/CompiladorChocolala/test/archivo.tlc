@@ -1,4 +1,3 @@
 PR R1 4;
-PR R2 5;
-FR R1;
-ADD R1 R2 R3;
+PR R2 4;
+AND R1 R2 R3;
