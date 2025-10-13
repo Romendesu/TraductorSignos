@@ -63,89 +63,68 @@ class VirtualMachine:
             
             # Operaciones de ALU
             elif (instruction[0] == "ADD" or instruction[0] == "SUB"
-            or instruction[0] == "MUL" or instruction[0] == "DIV"):
+            or instruction[0] == "MUL" or instruction[0] == "DIV" 
+            or instruction[0] == "AND" or instruction[0] == "OR" 
+            or instruction[0] == "XOR" or instruction[0] == "NAND" 
+            or instruction[0] == "NOR" or instruction[0] == "XNOR"
+            or instruction[0] == "NOT"):
+
                 print("OPERATION TYPE: ALU OPERATION")
                 # Paso previo: Velificar que el registro para almacenar este vacio
                 if not self.isRegisterEmpty(instruction[-1]):
                     print(f"[ERROR] Saving register is not empty, value = {self.memory[instruction[-1]]}")
 
                 # Paso 1: Introducir valores
-                value1, value2, saveReg = instruction[1], instruction[2], instruction[3]
-                print(value1, value2)
+                value1, value2, saveReg = instruction[1], instruction[2] if instruction[0] != "NOT" else None, instruction[3] if instruction[0] != "NOT" else None
+                valueListComprobation = [value1, value2]
                 
+                # Paso 2: Comprobacion  
+                for index, value in enumerate(valueListComprobation):
+                    if value and value[0] == "R":
+                        valueListComprobation[index] = self.memory[value]
                 
-                # Paso 2: Verificar valores
-                while (value1[0] == "R" or value2[0] == "R"):
-                    # Si el primer valor es un registro:
-                    if value1[0] == "R" and value2[0] != "R":
-                        value1 = self.memory[value1]
-                    elif value2[0] == "R" and value2[0] != "R":
-                        value2 = self.memory[value2]
-                    else:
-                        value1, value2 = self.memory[value1], self.memory[value2]
-                print(value1, value2)
+                value1, value2 = valueListComprobation
 
                 # Paso 3: Ingresar en un STACK
+                print("[STATUS] PUSHING TO STACK OPERATIONS...")
                 self.operationsStack.push(instruction[0])
+                print(self.operationsStack)
                 self.operationsStack.push(value1)
+                print(self.operationsStack)
                 self.operationsStack.push(value2)
+                print(self.operationsStack)
+
                 # Paso 4: Procesar operaciones
+                print("[STATUS]: ADDING TO TEMPORAL REGISTER")
                 t1 = self.memory["T1"] = self.operationsStack.pop()
+                print(self.operationsStack)
+                print("[STATUS] ADDED REGISTER TO T1 =",t1)
                 t2 = self.memory["T2"] = self.operationsStack.pop()
+                print("[STATUS] ADDED REGISTER TO T2 =",t2)
+                print(self.operationsStack)
                 operation = self.memory["OPERATION"] = self.operationsStack.pop()
+                print(self.operationsStack)
                 # Paso 5: REALIZAR OPERACIONES
                 match operation:
                     case "ADD":
-                        self.memory[saveReg] = self.addOperation(t2, t1) 
-                        continue
+                        self.memory[saveReg] = str(self.addOperation(t2, t1)) 
                     case "SUB":
-                        self.memory[saveReg] = self.resOperation(t2, t1)
-                        continue
+                        self.memory[saveReg] = str(self.resOperation(t2, t1))
                     case "MUL":
                         self.memory[saveReg] = self.mulOperation(t2, t1)
-                        continue
                     case "DIV":
                         self.memory[saveReg] = self.divOperation(t2, t1)
-                        continue
+                    case "AND":
+                        self.memory[saveReg] = str(self.andOperation(t2, t1))
+                    case _:
+                        print("Operacion no implementada")
                 # Paso 6: Limpiar registros temporales
+                print("DEPURACION")
                 self.freeRegister("T1")
                 self.freeRegister("T2")
                 self.freeRegister("OPERATION")
-
-                    
-            # Operaciones Logicas
-            elif (instruction[0] == "AND" or instruction[0] == "OR" or instruction[0] == "XOR" or instruction[0] == "NAND" or instruction[0] == "NOR" or instruction[0] == "XNOR"):
-                print("[INFO] AND OPERATION PROCCESSING")
-                # Paso previo: Comprobar que el registro donde se vaya a guardar este vacio
-                if not self.isRegisterEmpty(instruction[-1]):
-                    print(f"[ERROR] Can't do the operation, register: {instruction[3]} has the value: {self.memory[instruction[3]]}")
-                    break
-                # Paso 1: Ingresamos en la pila los valores para realizar la operacion
-                if instruction[1][0] != "R" and instruction[2][0] != "R":
-                    print("No se esta trabajando con registros")
-                    self.operationsStack.push("AND")
-                    self.operationsStack.push(instruction[1]) 
-                    self.operationsStack.push(instruction[2])
-                    print(self.operationsStack)
-                else:
-                    print("Se esta trabajando con registros")
-                    if not self.isRegisterEmpty(instruction[1]) and not self.isRegisterEmpty(instruction[2]):
-                        self.operationsStack.push("AND")
-                        self.operationsStack.push(self.memory[instruction[1]])
-                        self.operationsStack.push(self.memory[instruction[2]])
-                        print(self.operationsStack)
-                    else:
-                        break
-                    
-                
-                # Paso 2: Para el flujo normal, almacenamos los valores en registros temporales
-                self.memory["T1"] = self.operationsStack.pop()
-                self.memory["T2"] = self.operationsStack.pop()
+                print("Memory:")
                 self.showRegisters()
-
-                # Paso 3: Comprobar que el registro pasado este libre
-                if not self.isRegisterEmpty(instruction[-1]):
-                    print("[ERROR] Can't do the operation")
 
             # Operacion no encontrada
             else:
@@ -199,8 +178,8 @@ class VirtualMachine:
     # Operaciones ALU
 
     # Operaciones Aritmeticas
-    def addOperation(self, value1, value2) -> float:
-        return float(int(value1) + int(value2))
+    def addOperation(self, value1, value2) -> int:
+        return int(value1) + int(value2)
          
     
     def resOperation(self, value1, value2):
@@ -215,14 +194,13 @@ class VirtualMachine:
     # Operaciones Logicas
 
     def andOperation(self, value1, value2) -> bool:
-        return bool(value1 and value2)
-    
+        return value1 == value2    
     def orOperation(self, value1, value2) -> bool:
         return bool(value1 or value2)
     
     def xorOperation(self, value1,value2) -> bool:
         # O un valor, o el otro, pero no los 2
-        return bool((not value1 and value2) or (value1 and not value2))
+        return (not value1 == value2) or (not value1 == value2)
     
     def notOperation(self, value):
         return bool(not value)
@@ -234,7 +212,7 @@ class VirtualMachine:
         return bool(not(value1 or value2))
     
     def xnorOperation(self, value1, value2):
-        return bool(not ((not value1 and value2) or (value1 and not value2)))
+        return not ((not value1 == value2) or (not value1 == value2))
     
  
     
