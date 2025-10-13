@@ -7,8 +7,8 @@ import os
 # Variables globales
 scriptPath = os.path.dirname(os.path.abspath(__file__))
 memoryPath = os.path.join(scriptPath, "memory.json")
-# Pequeño script para cargar la memoria
 
+# Pequeño script para cargar la memoria
 def accessMemory() -> dict:
     with open(memoryPath, "r") as file: 
         return json.load(file)
@@ -65,26 +65,52 @@ class VirtualMachine:
             elif (instruction[0] == "ADD" or instruction[0] == "SUB"
             or instruction[0] == "MUL" or instruction[0] == "DIV"):
                 print("OPERATION TYPE: ALU OPERATION")
-                match instruction[0]:
+                # Paso previo: Velificar que el registro para almacenar este vacio
+                if not self.isRegisterEmpty(instruction[-1]):
+                    print(f"[ERROR] Saving register is not empty, value = {self.memory[instruction[-1]]}")
+
+                # Paso 1: Introducir valores
+                value1, value2, saveReg = instruction[1], instruction[2], instruction[3]
+                print(value1, value2)
+                
+                
+                # Paso 2: Verificar valores
+                while (value1[0] == "R" or value2[0] == "R"):
+                    # Si el primer valor es un registro:
+                    if value1[0] == "R" and value2[0] != "R":
+                        value1 = self.memory[value1]
+                    elif value2[0] == "R" and value2[0] != "R":
+                        value2 = self.memory[value2]
+                    else:
+                        value1, value2 = self.memory[value1], self.memory[value2]
+                print(value1, value2)
+
+                # Paso 3: Ingresar en un STACK
+                self.operationsStack.push(instruction[0])
+                self.operationsStack.push(value1)
+                self.operationsStack.push(value2)
+                # Paso 4: Procesar operaciones
+                t1 = self.memory["T1"] = self.operationsStack.pop()
+                t2 = self.memory["T2"] = self.operationsStack.pop()
+                operation = self.memory["OPERATION"] = self.operationsStack.pop()
+                # Paso 5: REALIZAR OPERACIONES
+                match operation:
                     case "ADD":
-                        sum1, sum2, reg = instruction[1], instruction[2], instruction[3]
-                        # Logica de la suma
-                        # Emplea funciones para definir la logica de la suma
+                        self.memory[saveReg] = self.addOperation(t2, t1) 
                         continue
                     case "SUB":
-                        sub1, sub2, reg = instruction[1], instruction[2], instruction[3]
-                        # Logica de la resta
-                        # Emplea funciones para definir la logica de la resta
+                        self.memory[saveReg] = self.resOperation(t2, t1)
                         continue
                     case "MUL":
-                        mul1, mul2, reg = instruction[1], instruction[2], instruction[3]
-                        # Logica de la multiplicacion
-                        # Emplea funciones para definir la logica de la multiplicacion
+                        self.memory[saveReg] = self.mulOperation(t2, t1)
                         continue
                     case "DIV":
-                        div1, div2, reg = instruction[1], instruction[2], instruction[3]
-                        # Logica de la division
-                        # Emplea funciones para definir la logica de la division
+                        self.memory[saveReg] = self.divOperation(t2, t1)
+                        continue
+                # Paso 6: Limpiar registros temporales
+                self.freeRegister("T1")
+                self.freeRegister("T2")
+                self.freeRegister("OPERATION")
 
                     
             # Operaciones Logicas
@@ -171,39 +197,44 @@ class VirtualMachine:
         return True if self.memory[register] is None else False
     
     # Operaciones ALU
+
     # Operaciones Aritmeticas
-    def addOperation(self, r1,r2,rs):
+    def addOperation(self, value1, value2) -> float:
+        return float(int(value1) + int(value2))
+         
+    
+    def resOperation(self, value1, value2):
         return None
     
-    def resOperation(self, r1,r2,rs):
+    def mulOperation(self, value1, value2):
         return None
     
-    def mulOperation(self, r1,r2,rs):
+    def divOperation(self, value1, value2):
         return None
-    
-    def divOperation(self, r1,r2,rs):
-        return None
+
     # Operaciones Logicas
 
     def andOperation(self, value1, value2) -> bool:
-        return value1 and value2
+        return bool(value1 and value2)
     
-    def orOperation(self, r1,r2,rs):
-        return None
+    def orOperation(self, value1, value2) -> bool:
+        return bool(value1 or value2)
     
-    def xorOperation(self, r1,r2,rs):
-        return None
+    def xorOperation(self, value1,value2) -> bool:
+        # O un valor, o el otro, pero no los 2
+        return bool((not value1 and value2) or (value1 and not value2))
     
-    def notOperation(self, r1):
-        return None
-    def nandOperation(self, r1,r2,rs):
-        return None
+    def notOperation(self, value):
+        return bool(not value)
+
+    def nandOperation(self, value1, value2):
+        return bool(not (value1 and value2))
     
-    def norOperation(self, r1,r2,rs):
-        return None
+    def norOperation(self, value1, value2):
+        return bool(not(value1 or value2))
     
-    def xnorOperation(self, r1,r2,rs):
-        return None
+    def xnorOperation(self, value1, value2):
+        return bool(not ((not value1 and value2) or (value1 and not value2)))
     
  
     
