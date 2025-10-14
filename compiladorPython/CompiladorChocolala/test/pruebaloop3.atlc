@@ -1,0 +1,22 @@
+&& Inicializar registros;
+PR R1 i(🤚);        && R1 = 1;
+PR R2 i(🤚🤚🤚);     && R2 = 3;
+PR R3 i(🤚);        && R3 = 1;
+
+LOOP R1 R2;
+
+MUL R3 i(🤚🤚) T4;  && T4 = R3 * 2
+ADD R1 i(🤚) T5;    && T5 = R1 + 1
+
+FR R1;
+PR R1 T5;
+
+FR R3;
+PR R3 T4;
+
+FR T4;
+FR T5;
+
+ENDLOOP;
+
+PRINT R1 R2 R3;

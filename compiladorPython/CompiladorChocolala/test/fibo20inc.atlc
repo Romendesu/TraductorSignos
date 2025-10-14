@@ -1,0 +1,30 @@
+PR T3 i(🤚);    // T3 = 1 (F1)
+PR T4 i(🤚);    // T4 = 1 (F2)
+PR T5 i(🤚🤚);  // T5 = 2 (Contador: ya generamos F1 y F2)
+PR T6 i(🤚🤚)i(👊); // T6 = 20 (Límite)
+
+LOOP T5 T6;
+
+// 1. Calcular siguiente número Fibonacci (F3 = F1 + F2)
+ADD T3 T4 UT3;  // UT3 = T3 + T4
+
+// 2. Desplazar: F1=F2 (T3 = T4)
+FR T3;
+PR T3 T4;
+
+// 3. Desplazar: F2=F3 (T4 = UT3)
+FR T4;
+PR T4 UT3;
+
+// 4. Incrementar contador (T5 = T5 + 1)
+ADD T5 i(🤚) UT4; // UT4 = T5 + 1
+FR T5;
+PR T5 UT4;
+
+// 5. Liberar temporales de la iteración
+FR UT3;
+FR UT4;
+
+ENDLOOP;
+
+PRINT T3 T4;    // Mostrar F19 y F20

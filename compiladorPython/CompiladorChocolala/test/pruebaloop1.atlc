@@ -1,0 +1,21 @@
+&& Inicializar registros;
+PR R1 i(✋);      && R1 = 5;
+PR R2 i(🤚👊);    && R2 = 9;
+PR R3 i(👊);      && R3 = 0;
+
+&& Loop para incrementar R1 y R3;
+LOOP R1 R2;
+ADD R3 i(🤚) T4;  && R3 = R3 + 1;
+ADD R1 i(🤚) T5;  && R1 = R1 + 1;
+
+FR R1;             && liberar R1;
+PR R1 T5;          && actualizar R1;
+
+FR R3;             && liberar R3;
+PR R3 T4;          && actualizar R3;
+
+FR T4;             && liberar T4;
+FR T5;             && liberar T5;
+ENDLOOP;
+
+PRINT R1 R2 R3;    && mostrar valores finales;

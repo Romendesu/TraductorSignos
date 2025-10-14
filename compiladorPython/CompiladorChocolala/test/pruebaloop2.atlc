@@ -1,0 +1,34 @@
+&& Inicializar registros;
+PR R1 i(🤚🤚);      && R1 = 2;
+PR R2 i(✋🤚);      && R2 = 4;
+PR R3 i(👊);        && R3 = 0;
+PR R4 i(👊);        && R4 = 0;
+
+LOOP R1 R2;
+
+&& 1. Operaciones ALU (Guardar resultados en temporales);
+ADD R3 i(🤚) T5;    // T5 = R3 + 1;
+ADD R4 i(🤚🤚) T6;   // T6 = R4 + 2;
+ADD R1 i(🤚) T7;    // T7 = R1 + 1;
+
+&& 2. Actualizar R1;
+FR R1;              // Liberar R1 (necesario);
+PR R1 T7;           // R1 = T7 (Actualiza R1);
+
+&& 3. Actualizar R3;
+FR R3;              // Liberar R3;
+PR R3 T5;           // R3 = T5 (Actualiza R3);
+
+&& 4. Actualizar R4;
+FR R4;              // Liberar R4;
+PR R4 T6;           // R4 = T6 (Actualiza R4);
+
+&& 5. Liberar temporales;
+FR T5;
+FR T6;
+FR T7;
+
+ENDLOOP;
+
+&& Mostrar resultado final: R1=4, R2=4, R3=2, R4=4;
+PRINT R1 R2 R3 R4;
