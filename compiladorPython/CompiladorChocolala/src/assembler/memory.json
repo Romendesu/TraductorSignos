@@ -2,7 +2,7 @@
     "R1": null,
     "R2": null,
     "R3": null,
-    "R4": null,
+    "R4": "True",
     "R5": null,
     "R6": null,
     "R7": null,
@@ -13,5 +13,7 @@
     "T4": null,
     "T5": null,
     "T6": null,
-    "OPERATION": null
+    "OPERATION": null,
+    "null": "True",
+    "null": "True"
 }

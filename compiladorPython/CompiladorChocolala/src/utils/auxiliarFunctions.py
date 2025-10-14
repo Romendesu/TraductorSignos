@@ -2,7 +2,7 @@ from utils.dataStructures import Queue
 import os
 
 # Comprobar la extension del archivo
-def checkFileExtension(file, extension = "tlc") -> bool:
+def checkFileExtension(file, extension = "atlc") -> bool:
     fileSliced = file.split(".")
     return True if (fileSliced[-1] == extension) else False
 

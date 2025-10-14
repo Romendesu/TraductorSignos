@@ -1,5 +1,5 @@
-from utils.dataStructures import Queue
 from utils.dataStructures import Stack
+from utils.dataStructures import Queue
 import json
 import time
 import os
@@ -12,12 +12,12 @@ memoryPath = os.path.join(scriptPath, "memory.json")
 def accessMemory() -> dict:
     with open(memoryPath, "r") as file: 
         return json.load(file)
-    
 # Pequeño script para actualizar la memoria
 def writeMemory(memory) -> None:
     with open(memoryPath, "w") as file:
         json.dump(memory, file, indent=4)
 
+# Clase Virtual machine
 class VirtualMachine:
     def __init__(self, queue):
         # Pasamos el programa como cola
@@ -106,16 +106,29 @@ class VirtualMachine:
                 print(self.operationsStack)
                 # Paso 5: REALIZAR OPERACIONES
                 match operation:
+                    # Casteamos el resultado automaticamente a String
                     case "ADD":
                         self.memory[saveReg] = str(self.addOperation(t2, t1)) 
                     case "SUB":
                         self.memory[saveReg] = str(self.resOperation(t2, t1))
                     case "MUL":
-                        self.memory[saveReg] = self.mulOperation(t2, t1)
+                        self.memory[saveReg] = str(self.mulOperation(t2, t1))
                     case "DIV":
-                        self.memory[saveReg] = self.divOperation(t2, t1)
+                        self.memory[saveReg] = str(self.divOperation(t2, t1))
                     case "AND":
                         self.memory[saveReg] = str(self.andOperation(t2, t1))
+                    case "OR":
+                        self.memory[saveReg] = str(self.orOperation(t2, t1))
+                    case "XOR":
+                        self.memory[saveReg] = str(self.xorOperation(t2, t1))
+                    case "NOT":
+                        self.memory[saveReg] = str(self.notOperation(t1))
+                    case "NAND":
+                        self.memory[saveReg] = str(self.nandOperation(t2, t1))
+                    case "NOR":
+                        self.memory[saveReg] = str(self.norOperation(t2, t1))
+                    case "XNOR":
+                        self.memory[saveReg] = str(self.xnorOperation(t2, t1))
                     case _:
                         print("Operacion no implementada")
                 # Paso 6: Limpiar registros temporales
@@ -134,7 +147,6 @@ class VirtualMachine:
             self.queue.pop()
         writeMemory(self.memory)
         print(f"[EXIT] Program executed in {time.time() - timeI} seconds.")
-
 
     '''
     ------------------------------------------------------------------------------------
@@ -182,38 +194,44 @@ class VirtualMachine:
         return int(value1) + int(value2)
          
     
-    def resOperation(self, value1, value2):
-        return None
+    def resOperation(self, value1, value2) -> int:
+        return int(value1) - int(value2)
     
     def mulOperation(self, value1, value2):
-        return None
+        return int(value1) * int(value2)
     
     def divOperation(self, value1, value2):
-        return None
+        return int(value1) // int(value2)
 
     # Operaciones Logicas
 
     def andOperation(self, value1, value2) -> bool:
-        return value1 == value2    
+    # Devuelve True si ambos valores son "iguales y verdaderos" (no vacíos ni 0)
+        return bool(value1) and bool(value2)
+
     def orOperation(self, value1, value2) -> bool:
-        return bool(value1 or value2)
-    
-    def xorOperation(self, value1,value2) -> bool:
-        # O un valor, o el otro, pero no los 2
-        return (not value1 == value2) or (not value1 == value2)
-    
+        # Devuelve True si al menos uno de los valores no está vacío ni es 0
+        return bool(value1) or bool(value2)
+
+    def xorOperation(self, value1, value2) -> bool:
+        # Verdadero si exactamente uno de los dos tiene "valor verdadero"
+        return bool(value1) != bool(value2)
+
     def notOperation(self, value):
-        return bool(not value)
+        # Invierte el valor lógico de "value"
+        return not bool(value)
 
     def nandOperation(self, value1, value2):
-        return bool(not (value1 and value2))
-    
+        # Negación del AND
+        return not (bool(value1) and bool(value2))
+
     def norOperation(self, value1, value2):
-        return bool(not(value1 or value2))
-    
+        # Negación del OR
+        return not (bool(value1) or bool(value2))
+
     def xnorOperation(self, value1, value2):
-        return not ((not value1 == value2) or (not value1 == value2))
+        # Verdadero si ambos son "verdaderos" o ambos son "falsos"
+        return bool(value1) == bool(value2)
     
- 
-    
+        
 
