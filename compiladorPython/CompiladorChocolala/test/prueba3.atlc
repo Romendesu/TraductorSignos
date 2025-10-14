@@ -1,0 +1,14 @@
+PR R1 i(✋);         && 5
+PR R2 i(🤚);         && 1
+
+IF R1 R2;           && No se cumple
+
+ADD R1 R2 R3;       && (no ejecuta)
+FR R3;
+
+ELSE;
+
+SUB R1 R2 R4;       && 4
+FR R4;
+
+ENDIF;

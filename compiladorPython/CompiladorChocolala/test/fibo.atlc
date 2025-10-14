@@ -1,0 +1,24 @@
+&& Fibonacci de 0 a 5
+
+PR R1 i(👊);          && R1 = 0 (primer término)
+PR R2 i(🤚);          && R2 = 1 (segundo término)
+
+&& Iteración 1: F2 = R1 + R2 = 1
+ADD R1 R2 R3;         && R3 = 1
+
+&& Iteración 2: F3 = R2 + R3 = 2
+ADD R2 R3 R4;         && R4 = 2
+
+&& Iteración 3: F4 = R3 + R4 = 3
+ADD R3 R4 R5;         && R5 = 3
+
+&& Iteración 4: F5 = R4 + R5 = 5
+ADD R4 R5 R6;         && R6 = 5
+
+&& Limpieza de registros no necesarios
+FR R1;
+FR R2;
+FR R3;
+FR R4;
+FR R5;
+FR R6;

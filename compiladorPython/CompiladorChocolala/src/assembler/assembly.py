@@ -25,10 +25,15 @@ class VirtualMachine:
         self.memory = accessMemory()
         self.operationsStack = Stack()
         self.resultsStack = Stack()
-
+        
     def execute(self) -> None:
         timeI = time.time()
+        
         for indexInstruction in range(len(self.queue)):
+            if self.queue.isEmpty():
+                print("\033[96m[INFO] Program finalizated\033[0m")
+                break
+
             # Convertimos la instruccion en una lista
             instruction = (self.queue.peek()).split()
 
@@ -44,7 +49,9 @@ class VirtualMachine:
                 match (instruction[0]):
                     # Actualizamos el valor del registro
                     case 'PR':
-                        register, value = instruction[1], instruction[2]
+                        register = instruction[1]
+                        value = self.decodeTeLaChoco(instruction[2])
+
                         print(f"[READ] Register: {register}")
                         print(f"[READ] Value to save: {value}")
                         # Almacenamos el registro
@@ -62,53 +69,49 @@ class VirtualMachine:
                         continue
             
             # Operaciones de ALU
-            elif (instruction[0] == "ADD" or instruction[0] == "SUB"
-            or instruction[0] == "MUL" or instruction[0] == "DIV" 
-            or instruction[0] == "AND" or instruction[0] == "OR" 
-            or instruction[0] == "XOR" or instruction[0] == "NAND" 
-            or instruction[0] == "NOR" or instruction[0] == "XNOR"
-            or instruction[0] == "NOT"):
+            elif instruction[0] in ("ADD","SUB","MUL","DIV","AND","OR","XOR","NAND","NOR","XNOR","NOT"):
+                print("\033[95mOPERATION TYPE: ALU OPERATION\033[0m")
 
-                print("OPERATION TYPE: ALU OPERATION")
-                # Paso previo: Velificar que el registro para almacenar este vacio
-                if not self.isRegisterEmpty(instruction[-1]):
-                    print(f"[ERROR] Saving register is not empty, value = {self.memory[instruction[-1]]}")
+                # Paso previo: verificar que el registro para guardar esté vacío
+                if instruction[0] == "NOT":
+                    value1 = str(self.decodeTeLaChoco(instruction[1]))
+                    value2 = None
+                    saveReg = instruction[1]  
+                else:
+                    value1 = instruction[1]
+                    value2 = str(self.decodeTeLaChoco(instruction[2]))
+                    saveReg = instruction[3]
 
-                # Paso 1: Introducir valores
-                value1, value2, saveReg = instruction[1], instruction[2] if instruction[0] != "NOT" else None, instruction[3] if instruction[0] != "NOT" else None
-                valueListComprobation = [value1, value2]
-                
-                # Paso 2: Comprobacion  
-                for index, value in enumerate(valueListComprobation):
-                    if value and value[0] == "R":
-                        valueListComprobation[index] = self.memory[value]
-                
-                value1, value2 = valueListComprobation
 
-                # Paso 3: Ingresar en un STACK
-                print("[STATUS] PUSHING TO STACK OPERATIONS...")
+                # Paso 2: Comprobación si los valores son registros
+                if value1[0] == "R":
+                    value1 = self.memory[value1]
+                if value2 and value2[0] == "R":
+                    value2 = self.memory[value2]
+
+
+                # Paso 3: Pushing en stack
+                print("\033[93m[STATUS] PUSHING TO STACK OPERATIONS...\033[0m")
                 self.operationsStack.push(instruction[0])
-                print(self.operationsStack)
                 self.operationsStack.push(value1)
-                print(self.operationsStack)
-                self.operationsStack.push(value2)
+                if value2 is not None:
+                    self.operationsStack.push(value2)
                 print(self.operationsStack)
 
                 # Paso 4: Procesar operaciones
-                print("[STATUS]: ADDING TO TEMPORAL REGISTER")
+                print("\033[93m[STATUS] ADDING TO TEMPORAL REGISTER\033[0m")
                 t1 = self.memory["T1"] = self.operationsStack.pop()
-                print(self.operationsStack)
-                print("[STATUS] ADDED REGISTER TO T1 =",t1)
-                t2 = self.memory["T2"] = self.operationsStack.pop()
-                print("[STATUS] ADDED REGISTER TO T2 =",t2)
-                print(self.operationsStack)
+                print(f"\033[92m[STATUS] ADDED REGISTER TO T1 = {t1}\033[0m")
+                t2 = self.memory["T2"] = self.operationsStack.pop() if value2 is not None else None
+                if t2 is not None:
+                    print(f"\033[92m[STATUS] ADDED REGISTER TO T2 = {t2}\033[0m")
                 operation = self.memory["OPERATION"] = self.operationsStack.pop()
-                print(self.operationsStack)
-                # Paso 5: REALIZAR OPERACIONES
+                print(f"\033[96m[STATUS] OPERATION = {operation}\033[0m")
+
+                # Paso 5: Realizar operación
                 match operation:
-                    # Casteamos el resultado automaticamente a String
                     case "ADD":
-                        self.memory[saveReg] = str(self.addOperation(t2, t1)) 
+                        self.memory[saveReg] = str(self.addOperation(t2, t1))
                     case "SUB":
                         self.memory[saveReg] = str(self.resOperation(t2, t1))
                     case "MUL":
@@ -130,15 +133,62 @@ class VirtualMachine:
                     case "XNOR":
                         self.memory[saveReg] = str(self.xnorOperation(t2, t1))
                     case _:
-                        print("Operacion no implementada")
+                        print("\033[91mOperacion no implementada\033[0m")
+
                 # Paso 6: Limpiar registros temporales
-                print("DEPURACION")
+                print("\033[94m[DEPURACION] Limpiando registros temporales...\033[0m")
                 self.freeRegister("T1")
                 self.freeRegister("T2")
                 self.freeRegister("OPERATION")
-                print("Memory:")
+
+                print("\033[93mMemory actual:\033[0m")
                 self.showRegisters()
 
+            # Condicionales
+            elif instruction[0] in ("IF", "ELSEIF", "ELSE", "ENDIF"):
+                op = instruction[0]
+
+                # ENDIF: finalizamos el bloque
+                if op == "ENDIF":
+                    print("\033[96mINSTRUCTION FINALIZATED\033[0m")
+                    continue
+
+                # IF o ELSEIF: verificamos condiciones
+                if op in ("IF", "ELSEIF"):
+                    if len(instruction) < 3:
+                        print(f"\033[91m[ERROR] {op} WITHOUT ENOUGH PARAMETERS\033[0m")
+                        continue
+                    subcondition1, subcondition2 = instruction[1], instruction[2]
+
+                    # Si la condición es falsa, saltamos hasta ELSEIF, ELSE o ENDIF
+                    if subcondition1 != subcondition2:
+                        print(f"\033[93m[STATUS] {op} CONDITION IS FALSE, SKIPPING UNTIL ELSEIF, ELSE OR ENDIF\033[0m")
+                        while not self.queue.isEmpty():
+                            skipped_instruction = self.queue.pop()
+                            print(f"\033[95mSkipped instruction: {skipped_instruction}\033[0m")
+
+                            next_instruction = self.queue.peek()
+                            if not next_instruction:
+                                break
+
+                            next_op = next_instruction.split()[0]
+                            print(f"\033[94mNext operation: {next_op}\033[0m")
+                            if next_op in ("ELSEIF", "ELSE", "ENDIF"):
+                                break
+                    else:
+                        print(f"\033[92m[STATUS] {op} CONDITION IS TRUE, EXECUTING BLOCK\033[0m")
+                
+                # ELSE: siempre se ejecuta si llegamos hasta aquí
+                elif op == "ELSE":
+                    print("\033[96m[STATUS] ELSE BLOCK, EXECUTING\033[0m")
+            elif instruction[0] == "&&":
+                print("Comment, omit")
+            elif instruction[0] == "PRINT":
+                for register in instruction:
+                    if register == "PRINT":
+                        print("MOSTRANDO REGISTROS:")
+                    else:
+                        print(f"REGISTRO {register}:")
             # Operacion no encontrada
             else:
                 print(f"[ERROR] Invalid operation, passed argument: {instruction[0]}")
@@ -146,7 +196,8 @@ class VirtualMachine:
             print("[INFO] Pass to next instruction...")
             self.queue.pop()
         writeMemory(self.memory)
-        print(f"[EXIT] Program executed in {time.time() - timeI} seconds.")
+        print(f"\033[96m[EXIT] Program executed in {time.time() - timeI:.4f} seconds.\033[0m")
+
 
     '''
     ------------------------------------------------------------------------------------
@@ -190,8 +241,8 @@ class VirtualMachine:
     # Operaciones ALU
 
     # Operaciones Aritmeticas
-    def addOperation(self, value1, value2) -> int:
-        return int(value1) + int(value2)
+    def addOperation(self, value1, value2) -> str:
+        return str(int(value1) + int(value2))
          
     
     def resOperation(self, value1, value2) -> int:
@@ -233,5 +284,33 @@ class VirtualMachine:
         # Verdadero si ambos son "verdaderos" o ambos son "falsos"
         return bool(value1) == bool(value2)
     
-        
+    def decodeTeLaChoco(self, text):
+        handDict = {
+            'i(🤚)': '1',
+            'i(🤚🤚)': '2',
+            'i(🤚🤚🤚)': '3',
+            'i(✋🤚)': '4',
+            'i(✋)': '5',
+            'i(🤚✋)': '6',
+            'i(🤚🤚✋)': '7',
+            'i(🤚🤚🤚✋)': '8',
+            'i(🤚👊)': '9',
+            'i(👊)': '0'
+        }
 
+        if not isinstance(text, str):
+            return text
+
+        clean_text = text.strip()
+        result = clean_text
+
+        # Reemplazar todos los patrones por su número
+        for k, v in handDict.items():
+            result = result.replace(k, v)
+
+        # Si contiene solo dígitos, convertir a int
+        return int(result) if result.isdigit() else text
+
+
+
+        

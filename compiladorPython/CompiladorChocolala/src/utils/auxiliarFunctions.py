@@ -9,7 +9,7 @@ def checkFileExtension(file, extension = "atlc") -> bool:
 # Convertir el archivo de texto a un Array de instrucciones
 def addInstructionsQueue(fileArgument) -> Queue: 
     instructionsQueue = Queue()
-    with open(fileArgument, "r") as file:
+    with open(fileArgument, "r", encoding="utf-8") as file:
         for instruction in file:
             clean_instruction = instruction.strip().replace(";", "")
             if clean_instruction:  # 

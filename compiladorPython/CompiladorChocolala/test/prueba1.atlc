@@ -1,0 +1,4 @@
+PR R1 i(✋);         && R1 = 5
+PR R2 i(🤚🤚);       && R2 = 2
+ADD R1 R2 R3;       && R3 = 7
+FR R3;              && Se libera R3
